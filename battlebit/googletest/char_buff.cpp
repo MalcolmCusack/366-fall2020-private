@@ -13,7 +13,7 @@ TEST(char_buff, bootstrap) {
     cb_append(buffer, "Foo");
     cb_print(buffer);
     EXPECT_TRUE(strcmp(buffer->buffer, "FooFoo") == 0);
-    free(buffer);
+    cb_free(buffer);
 }
 
 TEST(char_buff, noOverFlow) {
@@ -26,7 +26,7 @@ TEST(char_buff, noOverFlow) {
     cb_append(buffer, "Foo");
     cb_print(buffer);
     EXPECT_TRUE(strcmp(buffer->buffer, "Foo") == 0);
-    free(buffer);
+    cb_free(buffer);
 }
 
 TEST(char_buff, tokenize) {
@@ -35,7 +35,7 @@ TEST(char_buff, tokenize) {
     EXPECT_TRUE(strcmp(cb_tokenize(buffer, " "), "Foo") == 0);
     EXPECT_TRUE(strcmp(cb_next_token(buffer), "Bar") == 0);
     EXPECT_TRUE(strcmp(cb_next_token(buffer), "Baz") == 0);
-    free(buffer);
+    cb_free(buffer);
 }
 
 

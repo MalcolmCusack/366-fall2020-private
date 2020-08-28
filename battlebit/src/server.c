@@ -20,7 +20,7 @@ int handle_client_connect(int player) {
     // handle connect from a telnet client
 }
 
-void server_broadcast(char_buff *out_buffer) {
+void server_broadcast(char_buff *msg) {
     // send message to all players
 }
 

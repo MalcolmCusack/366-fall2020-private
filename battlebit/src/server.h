@@ -15,7 +15,7 @@ typedef  struct game_server {
 
 int server_start();
 
-void server_broadcast(char_buff *out_buffer);
+void server_broadcast(char_buff *msg);
 
 game_server * server_create();
 
