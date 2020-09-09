@@ -18,7 +18,8 @@ A battleBit board is specified as follows:
 * The numbers indicate the X and Y position of the start of the ship 
 * A capital letter indicates that the ship is oriented horizontially, starting at the X, Y postion
 * A lower case letter indicates that the ship is oriented vertically, starting at the X, Y position
-* By convention, 0, 0 is the upper right position in the board, and 7,7 is the lower left
+* By convention, 0, 0 is the upper left position in the board, and 7,7 is the lower left
+  * So the top row would consist of the positions (0, 0), (1, 0), (2, 0), ..., (7,0)
 
 An example of a board specifications is:
 
@@ -126,3 +127,14 @@ say <string> - Send the string to all players as part of a chat
 fire [0-7] [0-7] - fire at the given position of the opponent
 exit - quit the server
 ```
+
+#### Grading Rubric
+
+The grading will be mainly based on automated tests.  However, a major component of the project is network programming, which is difficult to test in an automated manner, and will require us to run and test your application manually.  Additionally, you will be required to record a demo of the application running in network mode, with a specfic set of commands.
+
+The grading will break down like so:
+
+* 60% automated tests
+* 15% recorded demo
+* 15% manual testing of the network component by instructors
+* 10% code quality and proper synchronization
