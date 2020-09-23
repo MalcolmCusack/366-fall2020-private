@@ -9,22 +9,15 @@ char * print_binary_representation(unsigned int i, char *buffer){
     printf("%c%c", buffer[0],buffer[1]);
 
     for (size_t x = 2; x < 34;  ++x) {
-        buffer[x] = ('0' + !!(i & mask));
+            if (i & mask) {
+                buffer[x] = '1';
+            } else {
+                buffer[x] = '0';
+            }
 
         mask >>= 1;
     }
 
-    /*
-    for(int x=0; x < 32; i++) {
-        if ((i & mask) == 0) {
-            buffer[x] = 0;
-        } else {
-            buffer[x] = 1;
-        }
-        mask = mask >> 1u;
-
-    }
-     */
     return buffer;
 }
 
