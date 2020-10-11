@@ -4,6 +4,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 #include "game.h"
 
 // STEP 10 - Synchronization: the GAME structure will be accessed by both players interacting
@@ -77,16 +79,203 @@ int game_load_board(struct game *game, int player, char * spec) {
     // slot and return 1
     //
     // if it is invalid, you should return -1
+
+    int x, y, length, count = 0;
+
+    char *shiptypes;
+
+    if (spec == NULL) {
+        return -1;
+    }
+
+    if (strlen(spec) == 15) {
+
+
+
+        for (int i=0; i < strlen(spec); i++) {
+            // grabs what type of ship
+
+            if (i % 3 == 0) {
+
+                for (int j=0; j < strlen(spec); j++) {
+
+                    if (tolower(spec[i]) == tolower(spec[j])) {
+                        ++count;
+                    }
+                    if (count > 1) {
+                        return -1;
+
+                    }
+                }
+                count = 0;
+                //carrier
+                if (spec[i] == 'C') {
+                    // horizontal
+                    length = 5;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if(length + x > 7 && y < 8) {
+                        return -1;
+                    }
+                    add_ship_horizontal(&game->players[player], x, y, length);
+                    //printf("%llu", xy_to_bitval(x, y));
+
+                } else if (spec[i] == 'c') {
+                    // vertical
+                    length = 5;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+
+                    if (length + y > 7 && x < 8) {
+                        return -1;
+                    }
+                    add_ship_vertical(&game->players[player], x, y, length);
+                    // printf("%c", spec[i]);
+                    //battleship
+                } else if (spec[i] == 'B') {
+                    //horizontal
+                    length = 4;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if(length + x > 7 && y < 8) {
+                        return -1;
+                    }
+                    add_ship_horizontal(&game->players[player], x, y, length);
+
+                } else if (spec[i] == 'b') {
+                    // vertical
+                    length = 4;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if (length + y > 7 && x < 8) {
+                        return -1;
+                    }
+                    add_ship_vertical(&game->players[player], x, y, length);
+
+                    //destroyer
+                } else if (spec[i] == 'D') {
+                    //horizontal
+                    length = 3;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if(length + x > 7 && y < 8) {
+                        return -1;
+                    }
+                    if (add_ship_horizontal(&game->players[player], x, y, length)) {
+                        return -1;
+                    }
+
+                } else if (spec[i] == 'd') {
+                    // vertical
+                    length = 3;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if (length + y > 7 && x < 8) {
+                        return -1;
+                    }
+                    if (add_ship_vertical(&game->players[player], x, y, length) == -1) {
+                        return -1;
+                    }
+
+                    //Sub
+                } else if (spec[i] == 'S') {
+                    //horizontal
+                    length = 3;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if(length + x > 7 && y < 8) {
+                        return -1;
+                    }
+                    add_ship_horizontal(&game->players[player], x, y, length);
+
+                } else if (spec[i] == 's') {
+                    // vertical
+                    length = 3;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if (length + y > 7 && x < 8) {
+                        return -1;
+                    }
+                    add_ship_vertical(&game->players[player], x, y, length);
+
+                    //patrol
+                } else if (spec[i] == 'P') {
+                    //horizontal
+                    length = 2;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if(length + x > 7 && y < 8) {
+                        return -1;
+                    }
+                    add_ship_horizontal(&game->players[player], x, y, length);
+
+                } else if (spec[i] == 'p') {
+                    // vertical
+                    length = 2;
+                    x = (int) spec[(i + 1)] - '0';
+                    y = (int) spec[(i + 2)] - '0';
+                    if (length + y > 7 && x < 8) {
+                        return -1;
+                    }
+                    add_ship_vertical(&game->players[player], x, y, length);
+
+
+                } else {
+                    return -1;
+                }
+            }
+        }
+
+    } else {
+        printf("%s", spec);
+        return -1;
+    }
+    return 1;
 }
 
 int add_ship_horizontal(player_info *player, int x, int y, int length) {
     // implement this as part of Step 2
     // returns 1 if the ship can be added, -1 if not
     // hint: this can be defined recursively
+
+    //player->ships
+    int mask = xy_to_bitval(x, y);
+    int temp = length;
+    if (mask & player->ships) {
+        return -1;
+    } else if(length + x > 7 && y < 8) {
+        return -1;
+    } else {
+        while(temp>0){
+            player->ships = (mask | player->ships);
+            //(player->ships << mask);
+            x=x+1;
+            temp = temp-1;
+            add_ship_horizontal(player, x, y, temp);
+
+        }
+        return 1;
+    }
 }
 
 int add_ship_vertical(player_info *player, int x, int y, int length) {
     // implement this as part of Step 2
     // returns 1 if the ship can be added, -1 if not
     // hint: this can be defined recursively
+
+    int mask = xy_to_bitval(x, y);
+    int temp = length;
+    if (mask & player->ships) {
+        return -1;
+    } else if (length + y > 7 && x < 8) {
+        return -1;
+    } else {
+        while(temp>0){
+            player->ships = (mask | player->ships);
+            y= y + 1;
+            temp = temp - 1;
+            add_ship_vertical(player, x, y, temp);
+        }
+        return 1;
+    }
 }
