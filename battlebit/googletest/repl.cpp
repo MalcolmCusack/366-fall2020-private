@@ -19,6 +19,7 @@ TEST(repl_print_ships, print_ships){
     EXPECT_TRUE(strcmp(buffer->buffer, expected) == 0);
     free(buffer);
 }
+
 TEST(repl_print_hits, print_hits){
     game_init();
     struct game * gameon = game_get_current();

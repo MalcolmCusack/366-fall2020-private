@@ -96,7 +96,7 @@ int game_load_board(struct game *game, int player, char * spec) {
             // grabs what type of ship
 
             if (i % 3 == 0) {
-
+/*
                 for (int j=0; j < strlen(spec); j++) {
 
                     if (tolower(spec[i]) == tolower(spec[j])) {
@@ -106,7 +106,7 @@ int game_load_board(struct game *game, int player, char * spec) {
                         return -1;
 
                     }
-                }
+                } */
                 count = 0;
                 //carrier
                 if (spec[i] == 'C') {
@@ -161,9 +161,9 @@ int game_load_board(struct game *game, int player, char * spec) {
                     if(length + x > 7 && y < 8) {
                         return -1;
                     }
-                    if (add_ship_horizontal(&game->players[player], x, y, length)) {
-                        return -1;
-                    }
+                    add_ship_horizontal(&game->players[player], x, y, length);
+
+
 
                 } else if (spec[i] == 'd') {
                     // vertical
@@ -173,9 +173,8 @@ int game_load_board(struct game *game, int player, char * spec) {
                     if (length + y > 7 && x < 8) {
                         return -1;
                     }
-                    if (add_ship_vertical(&game->players[player], x, y, length) == -1) {
-                        return -1;
-                    }
+                    add_ship_vertical(&game->players[player], x, y, length);
+
 
                     //Sub
                 } else if (spec[i] == 'S') {
@@ -239,23 +238,26 @@ int add_ship_horizontal(player_info *player, int x, int y, int length) {
     // hint: this can be defined recursively
 
     //player->ships
-    int mask = xy_to_bitval(x, y);
+    unsigned long long mask = xy_to_bitval(x, y);
     int temp = length;
     if (mask & player->ships) {
         return -1;
     } else if(length + x > 7 && y < 8) {
         return -1;
     } else {
-        while(temp>0){
+        while(length>0){
             player->ships = (mask | player->ships);
             //(player->ships << mask);
             x=x+1;
-            temp = temp-1;
-            add_ship_horizontal(player, x, y, temp);
+            //temp = temp-1;
+            length = length -1;
+            add_ship_horizontal(player, x, y, length);
+
 
         }
-        return 1;
+        //return 1;
     }
+    return 1;
 }
 
 int add_ship_vertical(player_info *player, int x, int y, int length) {
@@ -263,19 +265,21 @@ int add_ship_vertical(player_info *player, int x, int y, int length) {
     // returns 1 if the ship can be added, -1 if not
     // hint: this can be defined recursively
 
-    int mask = xy_to_bitval(x, y);
-    int temp = length;
+    unsigned long long mask = xy_to_bitval(x, y);
+    //int temp = length;
     if (mask & player->ships) {
         return -1;
     } else if (length + y > 7 && x < 8) {
         return -1;
     } else {
-        while(temp>0){
+        while(length>0){
             player->ships = (mask | player->ships);
             y= y + 1;
-            temp = temp - 1;
-            add_ship_vertical(player, x, y, temp);
+            //temp = temp - 1;
+            length = length -1;
+            add_ship_vertical(player, x, y, length);
         }
-        return 1;
+        //return 1;
     }
+    return 1;
 }
