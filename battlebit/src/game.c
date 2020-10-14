@@ -125,7 +125,7 @@ int game_load_board(struct game *game, int player, char * spec) {
             // grabs what type of ship
 
             if (i % 3 == 0) {
-/*
+
                 for (int j=0; j < strlen(spec); j++) {
 
                     if (tolower(spec[i]) == tolower(spec[j])) {
@@ -135,7 +135,7 @@ int game_load_board(struct game *game, int player, char * spec) {
                         return -1;
 
                     }
-                } */
+                }
                 count = 0;
                 //carrier
                 if (spec[i] == 'C') {
