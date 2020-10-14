@@ -99,8 +99,8 @@ void repl_print_ships(player_info *player_info, char_buff *buffer) {
     //  you need to print an X.  If not, you need to print a space character ' '
     //unsigned long long mask = 1ull << 1;
     int x,y;
-    printf("  0 1 2 3 4 5 6 7");
-    cb_append(buffer, "  0 1 2 3 4 5 6 7");
+    printf("  0 1 2 3 4 5 6 7 ");
+    cb_append(buffer, "  0 1 2 3 4 5 6 7 ");
     for (y=0; y<8; y++) {
         printf("\n");
         cb_append(buffer, "\n");
@@ -118,9 +118,8 @@ void repl_print_ships(player_info *player_info, char_buff *buffer) {
         }
 
     }
-    //cb_append(buffer, "\n");
+    cb_append(buffer, "\n");
     printf("\n");
-    //cb_free(buffer);
 
 }
 
@@ -133,29 +132,25 @@ void repl_print_hits(struct player_info *player_info, struct char_buff *buffer) 
     // no shot was taken at a position, print a space character ' '
 
     int x,y;
-    printf("  0 1 2 3 4 5 6 7");
-    cb_append(buffer, "  0 1 2 3 4 5 6 7");
+    //cb_append(buffer, "\n");
+    cb_append(buffer, "  0 1 2 3 4 5 6 7 ");
     for (y=0; y<8; y++) {
-        printf("\n");
         cb_append(buffer, "\n");
-        printf("%d ", y);
         cb_append_int(buffer, y);
+        cb_append(buffer, " ");
         for (x=0; x<8; x++) {
             if (player_info->hits & xy_to_bitval(x, y)) {
                 cb_append(buffer, "H ");
-                printf("H ");
 
             } else if (player_info->shots & xy_to_bitval(x, y)) {
                 cb_append(buffer, "M ");
-                printf("M ");
             } else {
                 cb_append(buffer, "  ");
-                printf("  ");
             }
         }
 
     }
-    printf("\n");
+    cb_append(buffer, "\n");
 
-
+    cb_print(buffer);
 }
