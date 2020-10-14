@@ -97,12 +97,13 @@ void repl_print_ships(player_info *player_info, char_buff *buffer) {
     //unsigned long long mask = 1ull << 1;
     int x,y;
     printf("  0 1 2 3 4 5 6 7");
-    cb_append(buffer, "0 1 2 3 4 5 6 7");
+    cb_append(buffer, "  0 1 2 3 4 5 6 7");
     for (y=0; y<8; y++) {
         printf("\n");
         cb_append(buffer, "\n");
         printf("%d ", y);
         cb_append_int(buffer, y);
+        cb_append(buffer, " ");
         for (x=0; x<8; x++) {
             if (xy_to_bitval(x, y) & player_info->ships) {
                 cb_append(buffer, "* " );
@@ -112,40 +113,12 @@ void repl_print_ships(player_info *player_info, char_buff *buffer) {
                 printf("  ");
             }
         }
-        //printf(" ");
-        //cb_append(buffer, " ");
-
 
     }
+    //cb_append(buffer, "\n");
+    printf("\n");
+    //cb_free(buffer);
 
-
-
-    /*
-    //char *d = "";
-    int iter = 0;
-    //char *chbits = snprintf(buffer, 16, "%ull", player_info->ships);
-    //printf("%ull"chbits);
-    //printf("size: %li, append_offset: %li\n", buffer->size, buffer->append_offset);
-    //printf("string: %s\n", buffer->buffer);
-    //char * bits = cb_tokenize(buffer, "");
-
-    cb_append(buffer->buffer, chbits);
-    cb_tokenize(buffer->buffer, d);
-
-    while (cb_next_token(buffer) != NULL){
-        if (cb_next_token(buffer) == 1){
-            cb_append(buffer, "X");
-        } else {
-            cb_append(buffer, " ");
-        }
-        iter = iter + 1;
-        if (iter == 7){
-            printf("/n");
-            iter = 0;
-        }
-    }
-    free(buffer);
-    */
 }
 
 void repl_print_hits(struct player_info *player_info, struct char_buff *buffer) {
@@ -155,4 +128,31 @@ void repl_print_hits(struct player_info *player_info, struct char_buff *buffer) 
     // hits and shots values in the players game struct.  If a shot was fired at
     // a given spot and it was a hit, print 'H', if it was a miss, print 'M'.  If
     // no shot was taken at a position, print a space character ' '
+
+    int x,y;
+    printf("  0 1 2 3 4 5 6 7");
+    cb_append(buffer, "  0 1 2 3 4 5 6 7");
+    for (y=0; y<8; y++) {
+        printf("\n");
+        cb_append(buffer, "\n");
+        printf("%d ", y);
+        cb_append_int(buffer, y);
+        for (x=0; x<8; x++) {
+            if (player_info->hits & xy_to_bitval(x, y)) {
+                cb_append(buffer, "H ");
+                printf("H ");
+
+            } else if (player_info->shots & xy_to_bitval(x, y)) {
+                cb_append(buffer, "M ");
+                printf("M ");
+            } else {
+                cb_append(buffer, "  ");
+                printf("  ");
+            }
+        }
+
+    }
+    printf("\n");
+
+
 }
