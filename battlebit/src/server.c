@@ -54,10 +54,24 @@ int run_server() {
     //
     // You will then create a thread running handle_client_connect, passing the player number out
     // so they can interact with the server asynchronously
+
+    //port 9876
+    // new p thread to handle client connect, pass in player
 }
 
 int server_start() {
     // STEP 7 - using a pthread, run the run_server() function asynchronously, so you can still
     // interact with the game via the command line REPL
+
     init_server();
+    pthread_t tid1, tid2;
+    //pthread_create(&tid1, NULL, game_init, 2);
+    pthread_create(&tid1, NULL, run_server, 1);
+
+    // lock and unlock before and after critical code
+    //pthread_mutex_t lock;
+    //pthread_mutex_init(&lock, NULL);
+    //pthread_mutex_lock(&lock);
+    //pthread_mutex_unlock(&lock);
+    //pthread_mutex_destroy(&lock);
 }
