@@ -43,6 +43,8 @@ int handle_client_connect(int player) {
 
 void server_broadcast(char_buff *msg) {
     // send message to all players
+
+
 }
 
 int run_server() {
@@ -55,6 +57,56 @@ int run_server() {
     // You will then create a thread running handle_client_connect, passing the player number out
     // so they can interact with the server asynchronously
 
+    // creates socket
+    int server_socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (server_socket_fd == -1) {
+        printf("Can't create socket\n");
+    }
+
+    //resuse port
+    int yes = 1;
+    setsockopt(server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+
+    struct sockaddr_in server;
+
+    //socket information
+    server.sin_family = AF_INET;
+
+    // bind socket
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port = htons(9876);
+
+    int request = 0;
+    if ( bind(server_socket_fd, (struct sockaddr *)&server , sizeof(server)) < 0)
+    {
+        puts("BIND FAILED\n");
+    } else {
+        puts("BIND WORKED\n");
+        listen(server_socket_fd, 3);
+    }
+
+    puts("WAITING FOR CONNECTION\n");
+
+    // client socket descrption
+    struct sockaddr_in client;
+    socklen_t size_from_connect;
+    int client_socket_fd;
+    int request_count = 0;
+
+    while((client_socket_fd = accept(server_socket_fd,
+                                     (struct sockaddr *) &client, &size_from_connect)) > 0) {
+
+        // how to tell which player?
+        SERVER->player_sockets[0] = client_socket_fd;
+
+        pthread_create(SERVER->player_threads[0], NULL, handle_client_connect(0), 1);
+
+        /*char message[100] = {0};
+        sprintf(message, "blaw blaw blaw - req %d\n\n", request_count++);
+        send(client_socket_fd, message, strlen(message), 0);
+        close(client_socket_fd); */
+    }
+
     //port 9876
     // new p thread to handle client connect, pass in player
 }
@@ -64,9 +116,9 @@ int server_start() {
     // interact with the game via the command line REPL
 
     init_server();
-    pthread_t tid1, tid2;
+    //pthread_t tid1, tid2;
     //pthread_create(&tid1, NULL, game_init, 2);
-    pthread_create(&tid1, NULL, run_server, 1);
+    pthread_create(SERVER->server_thread, NULL, run_server, 1);
 
     // lock and unlock before and after critical code
     //pthread_mutex_t lock;
