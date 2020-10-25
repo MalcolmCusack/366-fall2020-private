@@ -40,7 +40,7 @@ int handle_client_connect(int player) {
     // be working against network sockets rather than standard out, and you will need
     // to coordinate turns via the game::status field.
 
-    //char_buff * command;
+    char_buff * command;
 
     do {
         // This is the classic Read, Evaluate, Print Loop, hence REPL
@@ -65,8 +65,10 @@ int handle_client_connect(int player) {
             } else if(strcmp(command, "server") == 0) {
                 server_start();
             } else if(strcmp(command, "show") == 0) {
-
+                int intCommand;
+                //intCommand = atoi(command);
                 // work with repl_print_board
+                repl_print_board(game_get_current(), atoi(arg1), buffer);
 
             } else if(strcmp(command, "reset") == 0) {
 
@@ -75,10 +77,12 @@ int handle_client_connect(int player) {
             } else if (strcmp(command, "load") == 0) {
 
                 // work with game_load_board
+                game_load_board(game_get_current(), atoi(arg1), arg2);
 
             } else if (strcmp(command, "fire") == 0) {
 
                 // work with game_fire
+                game_fire(game_get_current(), atoi(arg1), atoi(arg2), atoi(arg3));
 
             } else if (strcmp(command, "nasm") == 0) {
                 //nasm_hello_world();
@@ -143,7 +147,7 @@ int run_server() {
     struct sockaddr_in client;
     socklen_t size_from_connect;
     int client_socket_fd;
-    int request_count = 0;
+    //int request_count = 0;
     int count = 0;
 
     while((client_socket_fd = accept(server_socket_fd,

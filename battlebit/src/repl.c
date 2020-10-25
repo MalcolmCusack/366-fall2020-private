@@ -55,8 +55,10 @@ void repl_execute_command(struct char_buff * buffer) {
         } else if(strcmp(command, "server") == 0) {
             server_start();
         } else if(strcmp(command, "show") == 0) {
-
+            int intCommand;
+            //intCommand = atoi(command);
             // work with repl_print_board
+            repl_print_board(game_get_current(), atoi(arg1), buffer);
 
         } else if(strcmp(command, "reset") == 0) {
 
@@ -65,10 +67,12 @@ void repl_execute_command(struct char_buff * buffer) {
         } else if (strcmp(command, "load") == 0) {
 
             // work with game_load_board
+            game_load_board(game_get_current(), atoi(arg1), arg2);
 
         } else if (strcmp(command, "fire") == 0) {
 
             // work with game_fire
+            game_fire(game_get_current(), atoi(arg1), atoi(arg2), atoi(arg3));
 
         } else if (strcmp(command, "nasm") == 0) {
             nasm_hello_world();

@@ -45,6 +45,12 @@ int game_fire(game *game, int player, int x, int y) {
     int player1, player2;
     unsigned long long mask = xy_to_bitval(x, y);
 
+    if (player == 0) {
+        game->status = PLAYER_1_TURN;
+    } else {
+        game->status = PLAYER_0_TURN;
+    }
+
     if (player == 1){
         player2 = 0;
         player1 = 1;
@@ -60,10 +66,13 @@ int game_fire(game *game, int player, int x, int y) {
         game->players[opponent].ships = game->players[opponent].ships ^ mask;
 
 
-        if (game->players[opponent].ships == 0ull) {
-            PLAYER_0_WINS;
-        } else if (game->players[player].ships == 0ull) {
-            PLAYER_1_WINS;
+        if (game->players[player].ships == 0) {
+            //enum game_status(PLAYER_0_WINS);
+            game->status = PLAYER_0_WINS;
+
+        } else if (game->players[opponent].ships == 0) {
+            //enum game_status(PLAYER_1_WINS);
+            game->status = PLAYER_1_WINS;
         }
         return 1;
     } else {
@@ -147,6 +156,7 @@ int game_load_board(struct game *game, int player, char * spec) {
                         return -1;
                     }
                     add_ship_horizontal(&game->players[player], x, y, length);
+
                     //printf("%llu", xy_to_bitval(x, y));
 
                 } else if (spec[i] == 'c') {
@@ -258,7 +268,15 @@ int game_load_board(struct game *game, int player, char * spec) {
         printf("%s", spec);
         return -1;
     }
+
+
+    if (player == 0) {
+        game->status = CREATED;
+    } else {
+        game->status = PLAYER_0_TURN;
+    }
     return 1;
+
 }
 
 int add_ship_horizontal(player_info *player, int x, int y, int length) {
@@ -286,7 +304,9 @@ int add_ship_horizontal(player_info *player, int x, int y, int length) {
         }
         //return 1;
     }
+
     return 1;
+
 }
 
 int add_ship_vertical(player_info *player, int x, int y, int length) {
