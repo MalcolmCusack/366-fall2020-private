@@ -39,6 +39,58 @@ int handle_client_connect(int player) {
     // This function will end up looking a lot like repl_execute_command, except you will
     // be working against network sockets rather than standard out, and you will need
     // to coordinate turns via the game::status field.
+
+    //char_buff * command;
+
+    do {
+        // This is the classic Read, Evaluate, Print Loop, hence REPL
+        command = repl_read_command("battleBit (? for help) > ");
+        char* command = cb_tokenize(buffer, " \n");
+        if (command) {
+            char* arg1 = cb_next_token(buffer);
+            char* arg2 = cb_next_token(buffer);
+            char* arg3 = cb_next_token(buffer);
+            if (strcmp(command, "exit") == 0) {
+                printf("goodbye!");
+                exit(EXIT_SUCCESS);
+            } else if(strcmp(command, "?") == 0) {
+                printf("? - show help\n");
+                printf("load [0-1] <string> - load a ship layout file for the given player\n");
+                printf("show [0-1] - shows the board for the given player\n");
+                printf("fire [0-1] [0-7] [0-7] - fire at the given position\n");
+                printf("say <string> - Send the string to all players as part of a chat\n");
+                printf("reset - reset the game\n");
+                printf("server - start the server\n");
+                printf("exit - quit the server\n");
+            } else if(strcmp(command, "server") == 0) {
+                server_start();
+            } else if(strcmp(command, "show") == 0) {
+
+                // work with repl_print_board
+
+            } else if(strcmp(command, "reset") == 0) {
+
+                game_init();
+
+            } else if (strcmp(command, "load") == 0) {
+
+                // work with game_load_board
+
+            } else if (strcmp(command, "fire") == 0) {
+
+                // work with game_fire
+
+            } else if (strcmp(command, "nasm") == 0) {
+                //nasm_hello_world();
+            } else if (strcmp(command, "shortcut") == 0) {
+                // update player 1 to only have a single ship in position 0, 0
+                game_get_current()->players[1].ships = 1ull;
+            } else {
+                printf("Unknown Command: %s\n", command);
+            }
+        }
+        cb_free(command);
+    } while (command);
 }
 
 void server_broadcast(char_buff *msg) {
@@ -92,14 +144,21 @@ int run_server() {
     socklen_t size_from_connect;
     int client_socket_fd;
     int request_count = 0;
+    int count = 0;
 
     while((client_socket_fd = accept(server_socket_fd,
                                      (struct sockaddr *) &client, &size_from_connect)) > 0) {
 
-        // how to tell which player?
-        SERVER->player_sockets[0] = client_socket_fd;
+        // how to tell which player? Do I need an if statement?
+        //int opponent = (player + 1) % 2;
 
-        pthread_create(SERVER->player_threads[0], NULL, handle_client_connect(0), 1);
+        SERVER->player_sockets[count] = client_socket_fd;
+        //SERVER->player_sockets[1] = client_socket_fd;
+
+
+        pthread_create(&SERVER->player_threads[count], NULL, handle_client_connect, &count);
+
+        count +=1;
 
         /*char message[100] = {0};
         sprintf(message, "blaw blaw blaw - req %d\n\n", request_count++);
@@ -116,9 +175,10 @@ int server_start() {
     // interact with the game via the command line REPL
 
     init_server();
-    //pthread_t tid1, tid2;
+    //pthread_t game_thread;
     //pthread_create(&tid1, NULL, game_init, 2);
-    pthread_create(SERVER->server_thread, NULL, run_server, 1);
+    // or its backwards..
+    pthread_create(&SERVER->server_thread, NULL, run_server, NULL);
 
     // lock and unlock before and after critical code
     //pthread_mutex_t lock;

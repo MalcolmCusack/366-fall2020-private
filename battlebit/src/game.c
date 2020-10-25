@@ -41,7 +41,7 @@ int game_fire(game *game, int player, int x, int y) {
     //
     //  If the opponents ships value is 0, they have no remaining ships, and you should set the game state to
     //  PLAYER_1_WINS or PLAYER_2_WINS depending on who won.
-
+    int opponent = (player + 1) % 2;
     int player1, player2;
     unsigned long long mask = xy_to_bitval(x, y);
 
@@ -52,17 +52,17 @@ int game_fire(game *game, int player, int x, int y) {
         player1=0;
         player2=1;
     }
-    game->players[player1].shots = game->players[player1].shots | mask;
-    printf("\n\n%ull", game->players[player1].shots);
+    game->players[player].shots = game->players[player].shots | mask;
+    printf("\n\n%ull", game->players[player].shots);
 
-    if (game->players[player2].ships & mask ) {
-        game->players[player1].hits = game->players[player1].hits | mask;
-        game->players[player2].ships = game->players[player2].ships ^ mask;
+    if (game->players[opponent].ships & mask ) {
+        game->players[player].hits = game->players[player].hits | mask;
+        game->players[opponent].ships = game->players[opponent].ships ^ mask;
 
 
-        if (game->players[player2].ships == 0ull) {
+        if (game->players[opponent].ships == 0ull) {
             PLAYER_0_WINS;
-        } else if (game->players[player1].ships == 0ull) {
+        } else if (game->players[player].ships == 0ull) {
             PLAYER_1_WINS;
         }
         return 1;
