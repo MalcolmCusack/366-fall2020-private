@@ -118,6 +118,13 @@ int game_load_board(struct game *game, int player, char * spec) {
     //
     // if it is invalid, you should return -1
 
+    // lock and unlock before and after critical code
+    //pthread_mutex_t lock;
+    //pthread_mutex_init(&lock, NULL);
+    //pthread_mutex_lock(&lock);
+    //pthread_mutex_unlock(&lock);
+    //pthread_mutex_destroy(&lock);
+
     int x, y, length, count = 0;
 
     char *shiptypes;
@@ -130,12 +137,12 @@ int game_load_board(struct game *game, int player, char * spec) {
 
 
 
-        for (int i=0; i < strlen(spec); i++) {
+        for (int i=0; i < strlen(spec); i += 3) {
             // grabs what type of ship
 
             if (i % 3 == 0) {
 
-                for (int j=0; j < strlen(spec); j++) {
+                for (int j=0; j < strlen(spec); j += 3) {
 
                     if (tolower(spec[i]) == tolower(spec[j])) {
                         ++count;

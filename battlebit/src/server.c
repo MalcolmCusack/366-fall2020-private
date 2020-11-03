@@ -111,7 +111,7 @@ int handle_client_connect(int player) {
 
 void server_broadcast(char_buff *msg) {
     // send message to all players
-
+    //cb_write()
 
 }
 
@@ -196,10 +196,5 @@ int server_start() {
     // or its backwards..
     pthread_create(&SERVER->server_thread, NULL, run_server, NULL);
 
-    // lock and unlock before and after critical code
-    //pthread_mutex_t lock;
-    //pthread_mutex_init(&lock, NULL);
-    //pthread_mutex_lock(&lock);
-    //pthread_mutex_unlock(&lock);
-    //pthread_mutex_destroy(&lock);
+
 }
