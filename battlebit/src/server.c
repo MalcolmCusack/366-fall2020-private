@@ -40,61 +40,73 @@ int handle_client_connect(int player) {
     // be working against network sockets rather than standard out, and you will need
     // to coordinate turns via the game::status field.
 
-    char_buff * command;
+    char raw_buffer[2000];
+    char_buff *input_buffer = cb_create(2000);
+    char_buff *output_buffer = cb_create(2000);
 
-    do {
-        // This is the classic Read, Evaluate, Print Loop, hence REPL
-        command = repl_read_command("battleBit (? for help) > ");
-        char* command = cb_tokenize(buffer, " \n");
-        if (command) {
-            char* arg1 = cb_next_token(buffer);
-            char* arg2 = cb_next_token(buffer);
-            char* arg3 = cb_next_token(buffer);
-            if (strcmp(command, "exit") == 0) {
-                printf("goodbye!");
-                exit(EXIT_SUCCESS);
-            } else if(strcmp(command, "?") == 0) {
-                printf("? - show help\n");
-                printf("load [0-1] <string> - load a ship layout file for the given player\n");
-                printf("show [0-1] - shows the board for the given player\n");
-                printf("fire [0-1] [0-7] [0-7] - fire at the given position\n");
-                printf("say <string> - Send the string to all players as part of a chat\n");
-                printf("reset - reset the game\n");
-                printf("server - start the server\n");
-                printf("exit - quit the server\n");
-            } else if(strcmp(command, "server") == 0) {
-                server_start();
-            } else if(strcmp(command, "show") == 0) {
-                int intCommand;
-                //intCommand = atoi(command);
-                // work with repl_print_board
-                repl_print_board(game_get_current(), atoi(arg1), buffer);
+    int read_size;
+    cb_append(output_buffer, "\nbattleBit (? for help) > ");
+    cb_write(player, output_buffer);
 
-            } else if(strcmp(command, "reset") == 0) {
+    while ((read_size = recv(player, raw_buffer, 2000, 0)) > 0) {
+        cb_reset(output_buffer);
+        cb_reset(input_buffer);
+        if (read_size > 0) {
+            raw_buffer[read_size] = '\0'; //null terminate read
 
-                game_init();
+            // append to input buffer
+            cb_append(input_buffer, raw_buffer);
 
-            } else if (strcmp(command, "load") == 0) {
+            char *command = cb_tokenize(input_buffer, " \r\n");
 
-                // work with game_load_board
-                game_load_board(game_get_current(), atoi(arg1), arg2);
+            if (command) {
+                char* arg1 = cb_next_token(input_buffer);
+                char* arg2 = cb_next_token(input_buffer);
 
-            } else if (strcmp(command, "fire") == 0) {
+                if (strcmp(command, "?") == 0) {
+                    // create output
+                    cb_append(output_buffer, "? - show help\n");
+                    cb_append(output_buffer,"load <string> - load a ship layout file for the given player\n");
+                    cb_append(output_buffer,"show - shows the board for the given player\n");
+                    cb_append(output_buffer,"fire [0-7] [0-7] - fire at the given position\n");
+                    cb_append(output_buffer,"say <string> - Send the string to all players as part of a chat\n");
+                    cb_append(output_buffer,"reset - reset the game\n");
+                    cb_append(output_buffer,"server - start the server\n");
+                    cb_append(output_buffer,"exit - quit the server\n");
+                    //cb_append(output_buffer, command);
+                    //out put it
+                    cb_write(player, output_buffer);
+                } else if (strcmp(command, "exit") == 0) {
+                    cb_append(output_buffer, "Goodbye!\n");
+                    close(player);
+                } else if (command != NULL) {
+                    cb_append(output_buffer, "Command was : ");
+                    cb_append(output_buffer, command);
 
-                // work with game_fire
-                game_fire(game_get_current(), atoi(arg1), atoi(arg2), atoi(arg3));
+                    cb_write(player, output_buffer);
+                } else if (strcmp(command, "show") == 0) {
+                    repl_print_board(game_get_current(), player, output_buffer);
+                } else if (strcmp(command, "reset") == 0) {
+                    game_init();
+                } else if (strcmp(command, "load") == 0) {
+                    game_load_board(game_get_current(), player, arg1);
+                } else if (strcmp(command, "fire") == 0) {
+                    game_fire(game_get_current(), player, atoi(arg1), atoi(arg2));
+                } else if (strcmp(command, "say") == 0) {
+                    server_broadcast(arg1);
+                } else {
+                    cb_append(output_buffer,"Unknown Command: ");
+                    cb_append(output_buffer, command);
+                    cb_append(output_buffer, "\n");
+                }
 
-            } else if (strcmp(command, "nasm") == 0) {
-                //nasm_hello_world();
-            } else if (strcmp(command, "shortcut") == 0) {
-                // update player 1 to only have a single ship in position 0, 0
-                game_get_current()->players[1].ships = 1ull;
-            } else {
-                printf("Unknown Command: %s\n", command);
+                cb_reset(output_buffer);
+                cb_append(output_buffer, "\nbattleBut (? for help) > ");
+                cb_write(player, output_buffer);
             }
         }
-        cb_free(command);
-    } while (command);
+    }
+
 }
 
 void server_broadcast(char_buff *msg) {
