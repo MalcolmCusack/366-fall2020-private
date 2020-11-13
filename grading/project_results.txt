@@ -321,10 +321,10 @@ Expected equality of these values:
   add_ship_vertical(player_info,1,8,0)
     Which is: -1
   1
-[  FAILED  ] add_ship_vertical.empty_ship (0 ms)
+[  FAILED  ] add_ship_vertical.empty_ship (1 ms)
 [ RUN      ] add_ship_vertical.load_ship
 [       OK ] add_ship_vertical.load_ship (0 ms)
-[----------] 2 tests from add_ship_vertical (0 ms total)
+[----------] 2 tests from add_ship_vertical (1 ms total)
 
 [----------] 3 tests from game_load_board
 [ RUN      ] game_load_board.empty_spec
@@ -432,7 +432,7 @@ string:   0 1 2 3 4 5 6 7
 [----------] 2 tests from repl_print_hits (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 23 tests from 9 test suites ran. (0 ms total)
+[==========] 23 tests from 9 test suites ran. (1 ms total)
 [  PASSED  ] 20 tests.
 [  FAILED  ] 3 tests, listed below:
 [  FAILED  ] game_fire.hit_fire2
