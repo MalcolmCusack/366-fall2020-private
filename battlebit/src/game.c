@@ -277,8 +277,16 @@ int add_ship_horizontal(player_info *player, int x, int y, int length) {
     int temp = length;
     if (mask & player->ships) {
         return -1;
-    } else if(length + x > 7 && y < 8) {
+    }
+    if(length == 0) {
+        return 1;
+    }
+    if(x>7 || x < 0) {
+        if (y> 7 || y < 0) {
+            return -1;
+        }
         return -1;
+
     } else {
         while(length>0){
             player->ships = (mask | player->ships);
@@ -305,7 +313,14 @@ int add_ship_vertical(player_info *player, int x, int y, int length) {
     //int temp = length;
     if (mask & player->ships) {
         return -1;
-    } else if (length + y > 7 && x < 8) {
+    }
+    if(length == 0) {
+        return 1;
+    }
+    if(y>7 || y < 0) {
+        if (x> 7 || x < 0) {
+            return -1;
+        }
         return -1;
     } else {
         while(length>0){

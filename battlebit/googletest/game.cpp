@@ -77,6 +77,7 @@ TEST(game_fire,hit_fire2){
     struct game * gameon = game_get_current();
     char *     spec = "c00B07d23s75P61";
     game_load_board(gameon, 1, spec);
+    helper_print_ull(gameon->players[1].ships);
     ASSERT_EQ(game_fire(gameon,0,0,0),1);
     ASSERT_EQ(game_fire(gameon,0,0,1),1);
     ASSERT_EQ(game_fire(gameon,0,0,2),1);
