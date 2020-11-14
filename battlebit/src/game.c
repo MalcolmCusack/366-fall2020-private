@@ -42,7 +42,6 @@ int game_fire(game *game, int player, int x, int y) {
     //  If the opponents ships value is 0, they have no remaining ships, and you should set the game state to
     //  PLAYER_1_WINS or PLAYER_2_WINS depending on who won.
     int opponent = (player + 1) % 2;
-    int player1, player2;
     unsigned long long mask = xy_to_bitval(x, y);
 
     if (player == 0) {
@@ -51,20 +50,11 @@ int game_fire(game *game, int player, int x, int y) {
         game->status = PLAYER_0_TURN;
     }
 
-    if (player == 1){
-        player2 = 0;
-        player1 = 1;
-    } else {
-        player1=0;
-        player2=1;
-    }
     game->players[player].shots = game->players[player].shots | mask;
-    printf("\n\n%ull", game->players[player].shots);
 
     if (game->players[opponent].ships & mask ) {
         game->players[player].hits = game->players[player].hits | mask;
         game->players[opponent].ships = game->players[opponent].ships ^ mask;
-
 
         if (game->players[player].ships == 0) {
             //enum game_status(PLAYER_0_WINS);
@@ -127,8 +117,6 @@ int game_load_board(struct game *game, int player, char * spec) {
 
     int x, y, length, count = 0;
 
-    char *shiptypes;
-
     if (spec == NULL) {
         return -1;
     }
@@ -136,20 +124,18 @@ int game_load_board(struct game *game, int player, char * spec) {
     if (strlen(spec) == 15) {
 
 
-
-        for (int i=0; i < strlen(spec); i += 3) {
+        for (int i = 0; i < strlen(spec); i++) {
             // grabs what type of ship
 
             if (i % 3 == 0) {
 
-                for (int j=0; j < strlen(spec); j += 3) {
+                for (int j = 0; j < strlen(spec); j +=3) {
 
                     if (tolower(spec[i]) == tolower(spec[j])) {
                         ++count;
                     }
                     if (count > 1) {
                         return -1;
-
                     }
                 }
                 count = 0;
@@ -159,44 +145,40 @@ int game_load_board(struct game *game, int player, char * spec) {
                     length = 5;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if(length + x > 7 && y < 8) {
+                    int passed = add_ship_horizontal(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_horizontal(&game->players[player], x, y, length);
-
-                    //printf("%llu", xy_to_bitval(x, y));
 
                 } else if (spec[i] == 'c') {
                     // vertical
                     length = 5;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-
-                    if (length + y > 7 && x < 8) {
+                    int passed = add_ship_vertical(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_vertical(&game->players[player], x, y, length);
-                    // printf("%c", spec[i]);
-                    //battleship
+
                 } else if (spec[i] == 'B') {
                     //horizontal
                     length = 4;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if(length + x > 7 && y < 8) {
+                    int passed = add_ship_horizontal(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_horizontal(&game->players[player], x, y, length);
 
                 } else if (spec[i] == 'b') {
                     // vertical
                     length = 4;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if (length + y > 7 && x < 8) {
+                    int passed = add_ship_vertical(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_vertical(&game->players[player], x, y, length);
 
                     //destroyer
                 } else if (spec[i] == 'D') {
@@ -204,22 +186,20 @@ int game_load_board(struct game *game, int player, char * spec) {
                     length = 3;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if(length + x > 7 && y < 8) {
+                    int passed = add_ship_horizontal(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_horizontal(&game->players[player], x, y, length);
-
-
 
                 } else if (spec[i] == 'd') {
                     // vertical
                     length = 3;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if (length + y > 7 && x < 8) {
+                    int passed = add_ship_vertical(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_vertical(&game->players[player], x, y, length);
 
 
                     //Sub
@@ -228,20 +208,20 @@ int game_load_board(struct game *game, int player, char * spec) {
                     length = 3;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if(length + x > 7 && y < 8) {
+                    int passed = add_ship_horizontal(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_horizontal(&game->players[player], x, y, length);
 
                 } else if (spec[i] == 's') {
                     // vertical
                     length = 3;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if (length + y > 7 && x < 8) {
+                    int passed = add_ship_vertical(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_vertical(&game->players[player], x, y, length);
 
                     //patrol
                 } else if (spec[i] == 'P') {
@@ -249,32 +229,33 @@ int game_load_board(struct game *game, int player, char * spec) {
                     length = 2;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if(length + x > 7 && y < 8) {
+                    int passed = add_ship_horizontal(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_horizontal(&game->players[player], x, y, length);
 
                 } else if (spec[i] == 'p') {
                     // vertical
                     length = 2;
                     x = (int) spec[(i + 1)] - '0';
                     y = (int) spec[(i + 2)] - '0';
-                    if (length + y > 7 && x < 8) {
+                    int passed = add_ship_vertical(&game->players[player], x, y, length);
+                    if (passed == -1) {
                         return -1;
                     }
-                    add_ship_vertical(&game->players[player], x, y, length);
 
 
                 } else {
                     return -1;
                 }
+                }
             }
+
+        } else {
+            printf("%s", spec);
+            return -1;
         }
 
-    } else {
-        printf("%s", spec);
-        return -1;
-    }
 
 
     if (player == 0) {
@@ -307,12 +288,11 @@ int add_ship_horizontal(player_info *player, int x, int y, int length) {
             length = length -1;
             add_ship_horizontal(player, x, y, length);
 
-
         }
-        //return 1;
+        return 1;
     }
 
-    return 1;
+    //return 1;
 
 }
 
@@ -335,7 +315,7 @@ int add_ship_vertical(player_info *player, int x, int y, int length) {
             length = length -1;
             add_ship_vertical(player, x, y, length);
         }
-        //return 1;
+        return 1;
     }
-    return 1;
+    //return 1;
 }

@@ -48,7 +48,8 @@ int handle_client_connect(int player) {
     cb_append(output_buffer, "\nbattleBit (? for help) > ");
     cb_write(player, output_buffer);
 
-    while ((read_size = recv(player, raw_buffer, 2000, 0)) > 0) {
+    int fd = SERVER->player_sockets[player];
+    while ((read_size = recv(fd, raw_buffer, 2000, 0)) > 0) {
         cb_reset(output_buffer);
         cb_reset(input_buffer);
         if (read_size > 0) {
@@ -172,7 +173,7 @@ int run_server() {
         //SERVER->player_sockets[1] = client_socket_fd;
 
 
-        pthread_create(&SERVER->player_threads[count], NULL, handle_client_connect, &count);
+        pthread_create(&SERVER->player_threads[count], NULL, handle_client_connect, count);
 
         count +=1;
 
