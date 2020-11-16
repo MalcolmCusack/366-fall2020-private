@@ -45,17 +45,20 @@ int handle_client_connect(int player) {
     char_buff *output_buffer = cb_create(2000);
 
     int read_size;
+    char playerChar = player + '0';
+    char opponentChar = ((player + 1) % 2) + '0';
     int fd = SERVER->player_sockets[player];
+    struct game * gameon = game_get_current();
+    cb_append(output_buffer, "Welcome to the battleBit server Player ");
+    cb_append(output_buffer, &playerChar);
     cb_append(output_buffer, "\nbattleBit (? for help) > ");
     cb_write(fd, output_buffer);
-
 
     while ((read_size = recv(fd, raw_buffer, 2000, 0)) > 0) {
         cb_reset(output_buffer);
         cb_reset(input_buffer);
         if (read_size > 0) {
             raw_buffer[read_size] = '\0'; //null terminate read
-
             // append to input buffer
             cb_append(input_buffer, raw_buffer);
 
@@ -72,39 +75,35 @@ int handle_client_connect(int player) {
                     cb_append(output_buffer,"show - shows the board for the given player\n");
                     cb_append(output_buffer,"fire [0-7] [0-7] - fire at the given position\n");
                     cb_append(output_buffer,"say <string> - Send the string to all players as part of a chat\n");
-                    cb_append(output_buffer,"reset - reset the game\n");
-                    cb_append(output_buffer,"server - start the server\n");
                     cb_append(output_buffer,"exit - quit the server\n");
                     //cb_append(output_buffer, command);
-                    //out put it
-                    cb_write(fd, output_buffer);
+
                 } else if (strcmp(command, "exit") == 0) {
                     cb_append(output_buffer, "Goodbye!\n");
-                    cb_write(fd, output_buffer);
-                    close(fd);
-                } else if (command != NULL) {
-                    cb_append(output_buffer, "Command was : ");
-                    cb_append(output_buffer, command);
 
-                    cb_write(fd, output_buffer);
+                    close(fd);
+
                 } else if (strcmp(command, "show") == 0) {
-                    repl_print_board(game_get_current(), fd, output_buffer);
-                    cb_write(fd, output_buffer);
-                } else if (strcmp(command, "reset") == 0) {
-                    game_init();
+                    repl_print_board(gameon, player, output_buffer);
                 } else if (strcmp(command, "load") == 0) {
-                    game_load_board(game_get_current(), fd, arg1);
+                    game_load_board(gameon, player, arg1);
+                    cb_append(output_buffer, "Waiting On Player ");
+                    cb_append(output_buffer, &opponentChar);
                 } else if (strcmp(command, "fire") == 0) {
-                    game_fire(game_get_current(), fd, atoi(arg1), atoi(arg2));
+                    if (gameon->status == CREATED) {
+                        game_fire(gameon, player, atoi(arg1), atoi(arg2));
+                    } else {
+                        cb_append(output_buffer, "Game Has Not Begun!");
+                    }
                 } else if (strcmp(command, "say") == 0) {
                     server_broadcast(arg1);
                 } else {
                     cb_append(output_buffer,"Unknown Command: ");
                     cb_append(output_buffer, command);
                     cb_append(output_buffer, "\n");
-                    cb_write(fd, output_buffer);
-                }
 
+                }
+                cb_write(fd, output_buffer);
                 cb_reset(output_buffer);
                 cb_append(output_buffer, "\nbattleBut (? for help) > ");
                 cb_write(fd, output_buffer);
@@ -116,8 +115,11 @@ int handle_client_connect(int player) {
 
 void server_broadcast(char_buff *msg) {
     // send message to all players
-    cb_write(SERVER->player_sockets[0], msg);
-    cb_write(SERVER->player_sockets[1], msg);
+    char_buff *output_buffer = cb_create(2000);
+    cb_append(output_buffer, msg);
+    cb_write(SERVER->player_sockets[0], output_buffer);
+    cb_write(SERVER->player_sockets[1], output_buffer);
+    cb_reset(output_buffer);
 
 
 
