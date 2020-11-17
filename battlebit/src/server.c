@@ -113,7 +113,7 @@ int handle_client_connect(int player) {
                     } else if (player != playerTurn ) {
                         cb_append(output_buffer, "\nPlayer ");
                         cb_append(output_buffer, &opponentChar);
-                        cb_append(output_buffer, " Turn");
+                        cb_append(output_buffer, " Turn - Not Your Turn Dumbass");
                     } else {
                         unsigned long long hits = gameon->players[player].hits;
 
@@ -126,6 +126,11 @@ int handle_client_connect(int player) {
                             cb_append(output_buffer, " ");
                             cb_append(output_buffer, arg2);
                             cb_append(output_buffer, " - HIT");
+                            cb_write(SERVER->player_sockets[0], output_buffer);
+                            cb_write(SERVER->player_sockets[1], output_buffer);
+                            cb_write(SERVER->server_thread, output_buffer);
+                            cb_reset(output_buffer);
+
                         } else {
                             cb_append(output_buffer, "Player ");
                             cb_append(output_buffer, &playerChar);
@@ -134,16 +139,30 @@ int handle_client_connect(int player) {
                             cb_append(output_buffer, " ");
                             cb_append(output_buffer, arg2);
                             cb_append(output_buffer, " - MISS");
+                            cb_write(SERVER->player_sockets[0], output_buffer);
+                            cb_write(SERVER->player_sockets[1], output_buffer);
+                            cb_write(SERVER->server_thread, output_buffer);
+                            cb_reset(output_buffer);
                         }
                         if (gameon->status == PLAYER_0_WINS) {
-                            cb_append(output_buffer, " - Player ");
-                            cb_append(output_buffer, &playerChar);
-                            cb_append(output_buffer, " WINS!");
-
+                            cb_append(output_buffer, " - Player 0 WINS!");
+                            cb_write(SERVER->player_sockets[0], output_buffer);
+                            cb_write(SERVER->player_sockets[1], output_buffer);
+                            cb_write(SERVER->server_thread, output_buffer);
+                            cb_reset(output_buffer);
+                            game_init();
+                        } else if (gameon->status == PLAYER_1_WINS) {
+                            cb_append(output_buffer, " - Player 1 WINS!\n");
+                            cb_write(SERVER->player_sockets[0], output_buffer);
+                            cb_write(SERVER->player_sockets[1], output_buffer);
+                            //cb_write(SERVER->server_thread, output_buffer);
+                            cb_reset(output_buffer);
+                            game_init();
+                        } else {
+                            cb_append(output_buffer, "\nPlayer ");
+                            cb_append(output_buffer, &opponentChar);
+                            cb_append(output_buffer, " Turn");
                         }
-                        cb_append(output_buffer, "\nPlayer ");
-                        cb_append(output_buffer, &opponentChar);
-                        cb_append(output_buffer, " Turn");
                     }
                 } else if (strcmp(command, "say") == 0) {
                     server_broadcast(arg1, player);
@@ -164,12 +183,12 @@ int handle_client_connect(int player) {
                 }
                  */
                 cb_write(fd, output_buffer);
-                cb_write(SERVER->server_thread, output_buffer);
+                //cb_write(SERVER->server_thread, output_buffer);
                 cb_reset(output_buffer);
 
                 cb_append(output_buffer, "\nbattleBut (? for help) > ");
                 cb_write(fd, output_buffer);
-                cb_write(SERVER->server_thread, output_buffer);
+                //cb_write(SERVER->server_thread, output_buffer);
             }
         }
     }
@@ -217,7 +236,7 @@ int run_server() {
     if (server_socket_fd == -1) {
         printf("Can't create socket\n");
     }
-    SERVER->server_thread = server_socket_fd;
+
 
     //resuse port
     int yes = 1;
@@ -243,6 +262,7 @@ int run_server() {
 
     puts("WAITING FOR CONNECTION\n");
 
+    SERVER->server_thread = server_socket_fd;
     // client socket descrption
     struct sockaddr_in client;
     socklen_t size_from_connect;

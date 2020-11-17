@@ -66,13 +66,15 @@ int game_fire(game *game, int player, int x, int y) {
         game->players[player].hits = game->players[player].hits | mask;
         game->players[opponent].ships = game->players[opponent].ships ^ mask;
 
-        if (game->players[player].ships == 0) {
-            //enum game_status(PLAYER_0_WINS);
-            game->status = PLAYER_0_WINS;
+        if (game->players[player].hits > 0 || game->players[opponent].hits > 0) {
+            if (game->players[player].ships == 0) {
+                //enum game_status(PLAYER_0_WINS);
+                game->status = PLAYER_0_WINS;
 
-        } else if (game->players[opponent].ships == 0) {
-            //enum game_status(PLAYER_1_WINS);
-            game->status = PLAYER_1_WINS;
+            } else if (game->players[opponent].ships == 0) {
+                //enum game_status(PLAYER_1_WINS);
+                game->status = PLAYER_1_WINS;
+            }
         }
         pthread_mutex_unlock(&lock);
         pthread_mutex_destroy(&lock);
