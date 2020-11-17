@@ -31,280 +31,35 @@ string: Foo
 
 [----------] 6 tests from game_fire
 [ RUN      ] game_fire.empty_game
-
-
-1ll[       OK ] game_fire.empty_game (0 ms)
+[       OK ] game_fire.empty_game (0 ms)
 [ RUN      ] game_fire.hit_fire
-
-
-1ll
-
-3ll
-
-7ll
-
-15ll
-
-31ll
-
-32799ll
-
-98335ll
-
-8486943ll
-
-25264159ll
-
-92373023ll
-
-226590751ll
-
-495026207ll
-
-495026207ll
-
-495026207ll
-
-495026207ll
-
-495026207ll
-
-495026207ll[       OK ] game_fire.hit_fire (0 ms)
+[       OK ] game_fire.hit_fire (0 ms)
 [ RUN      ] game_fire.hit_fire2
-
-
-1ll
-
-257ll
-
-65793ll
-
-16843009ll
-
-16843009ll
-
-16843009ll
-
-16843009ll
-
-16843009ll
-
-16843009ll
-
-83951873ll
-
-83951873ll
-
-83951873ll
-
-83951873ll/home/carson/Projects/msu/csci-366-fall2020/grading/scripts/repos/malcolm_cusack/battlebit/googletest/game.cpp:91: Failure
-Expected equality of these values:
-  game_fire(gameon,0,7,5)
-    Which is: 0
-  1
-[  FAILED  ] game_fire.hit_fire2 (0 ms)
+  0 1 2 3 4 5 6 7
+0 1 0 0 0 0 0 0 0
+1 1 0 0 0 0 0 1 1
+2 1 0 0 0 0 0 0 0
+3 1 0 1 0 0 0 0 0
+4 1 0 1 0 0 0 0 0
+5 0 0 1 0 0 0 0 1
+6 0 0 0 0 0 0 0 1
+7 1 1 1 1 0 0 0 1
+[       OK ] game_fire.hit_fire2 (0 ms)
 [ RUN      ] game_fire.miss_fire
-
-
-32ll
-
-96ll
-
-224ll
-
-480ll
-
-992ll
-
-2016ll
-
-4064ll
-
-8160ll
-
-16352ll
-
-32736ll
-
-163808ll
-
-425952ll
-
-950240ll
-
-1998816ll
-
-4095968ll
-
-8290272ll
-
-41844704ll
-
-578715616ll
-
-1652457440ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll
-
-3799941088ll[       OK ] game_fire.miss_fire (0 ms)
+[       OK ] game_fire.miss_fire (0 ms)
 [ RUN      ] game_fire.miss_fire2
-
-
-2ll
-
-6ll
-
-14ll
-
-30ll
-
-62ll
-
-126ll
-
-254ll
-
-766ll
-
-1790ll
-
-3838ll
-
-7934ll
-
-16126ll
-
-147198ll
-
-409342ll
-
-933630ll
-
-1982206ll
-
-4079358ll
-
-8273662ll
-
-16662270ll
-
-50216702ll
-
-184434430ll
-
-452869886ll
-
-989740798ll
-
-2063482622ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll
-
-4210966270ll[       OK ] game_fire.miss_fire2 (0 ms)
+  0 1 2 3 4 5 6 7
+0 1 0 0 0 0 0 0 0
+1 1 0 0 0 0 0 1 1
+2 1 0 0 0 0 0 0 0
+3 1 0 1 0 0 0 0 0
+4 1 0 1 0 0 0 0 0
+5 0 0 1 0 0 0 0 1
+6 0 0 0 0 0 0 0 1
+7 1 1 1 1 0 0 0 1
+[       OK ] game_fire.miss_fire2 (0 ms)
 [ RUN      ] game_fire.invalid_fire
-
-
-0ll
-
-0ll
-
-0ll
-
-0ll[       OK ] game_fire.invalid_fire (0 ms)
+[       OK ] game_fire.invalid_fire (0 ms)
 [----------] 6 tests from game_fire (0 ms total)
 
 [----------] 2 tests from add_ship_horizontal
@@ -316,12 +71,7 @@ Expected equality of these values:
 
 [----------] 2 tests from add_ship_vertical
 [ RUN      ] add_ship_vertical.empty_ship
-/home/carson/Projects/msu/csci-366-fall2020/grading/scripts/repos/malcolm_cusack/battlebit/googletest/game.cpp:248: Failure
-Expected equality of these values:
-  add_ship_vertical(player_info,1,8,0)
-    Which is: -1
-  1
-[  FAILED  ] add_ship_vertical.empty_ship (0 ms)
+[       OK ] add_ship_vertical.empty_ship (0 ms)
 [ RUN      ] add_ship_vertical.load_ship
 [       OK ] add_ship_vertical.load_ship (0 ms)
 [----------] 2 tests from add_ship_vertical (0 ms total)
@@ -330,23 +80,14 @@ Expected equality of these values:
 [ RUN      ] game_load_board.empty_spec
 [       OK ] game_load_board.empty_spec (0 ms)
 [ RUN      ] game_load_board.incomplete_spec
-C00b02D23S47C-1-1b02D23S47p71/home/carson/Projects/msu/csci-366-fall2020/grading/scripts/repos/malcolm_cusack/battlebit/googletest/game.cpp:297: Failure
-Expected equality of these values:
-  game_load_board(gameon,0,spec)
-    Which is: 1
-  -1
-[  FAILED  ] game_load_board.incomplete_spec (0 ms)
+C00b02D23S47C-1-1b02D23S47p71[       OK ] game_load_board.incomplete_spec (1 ms)
 [ RUN      ] game_load_board.valid_spec
 [       OK ] game_load_board.valid_spec (0 ms)
-[----------] 3 tests from game_load_board (0 ms total)
+[----------] 3 tests from game_load_board (1 ms total)
 
 [----------] 1 test from game_status
 [ RUN      ] game_status.is_correct
-
-
-1ll
-
-1ll[       OK ] game_status.is_correct (0 ms)
+[       OK ] game_status.is_correct (0 ms)
 [----------] 1 test from game_status (0 ms total)
 
 [----------] 2 tests from repl_print_ships
@@ -373,9 +114,7 @@ string:   0 1 2 3 4 5 6 7
 
 [       OK ] repl_print_ships.print_ships (0 ms)
 [ RUN      ] repl_print_ships.print_ship_status
-
-
-0llsize: 2000, append_offset: 171
+size: 2000, append_offset: 171
 string:   0 1 2 3 4 5 6 7 
 0                 
 1                 
@@ -395,14 +134,12 @@ string:   0 1 2 3 4 5 6 7
 5 *               
 6                 
 7         * *     
-[       OK ] repl_print_ships.print_ship_status (1 ms)
-[----------] 2 tests from repl_print_ships (1 ms total)
+[       OK ] repl_print_ships.print_ship_status (0 ms)
+[----------] 2 tests from repl_print_ships (0 ms total)
 
 [----------] 2 tests from repl_print_hits
 [ RUN      ] repl_print_hits.print_hits
-
-
-1llsize: 2000, append_offset: 171
+size: 2000, append_offset: 171
 string:   0 1 2 3 4 5 6 7 
 0 H               
 1                 
@@ -415,9 +152,7 @@ string:   0 1 2 3 4 5 6 7
 
 [       OK ] repl_print_hits.print_hits (0 ms)
 [ RUN      ] repl_print_hits.print_miss
-
-
-0llsize: 2000, append_offset: 171
+size: 2000, append_offset: 171
 string:   0 1 2 3 4 5 6 7 
 0                 
 1                 
@@ -433,10 +168,4 @@ string:   0 1 2 3 4 5 6 7
 
 [----------] Global test environment tear-down
 [==========] 23 tests from 9 test suites ran. (1 ms total)
-[  PASSED  ] 20 tests.
-[  FAILED  ] 3 tests, listed below:
-[  FAILED  ] game_fire.hit_fire2
-[  FAILED  ] add_ship_vertical.empty_ship
-[  FAILED  ] game_load_board.incomplete_spec
-
- 3 FAILED TESTS
+[  PASSED  ] 23 tests.
