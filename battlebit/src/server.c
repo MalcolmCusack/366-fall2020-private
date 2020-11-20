@@ -48,8 +48,13 @@ int handle_client_connect(int player) {
     char_buff *output_buffer = cb_create(2000);
 
     int read_size;
-    char playerChar = player + '0';
-    char opponentChar = ((player + 1) % 2) + '0';
+    //char playerChar = player + '0';
+    char playerChar[5];
+    //char opponentChar = ((player + 1) % 2) + '0';
+    int opponent = ((player + 1) % 2);
+    char opponentChar[5];
+    sprintf(playerChar, "%d", player);
+    sprintf(opponentChar, "%d", opponent);
 
     int fd = SERVER->player_sockets[player];
     struct game * gameon = game_get_current();
@@ -57,7 +62,7 @@ int handle_client_connect(int player) {
 
 
     cb_append(output_buffer, "Welcome to the battleBit server Player ");
-    cb_append(output_buffer, &playerChar);
+    cb_append(output_buffer, playerChar);
     cb_append(output_buffer, "\nbattleBit (? for help) > ");
     cb_write(fd, output_buffer);
 
@@ -107,7 +112,7 @@ int handle_client_connect(int player) {
 
                     } else {
                         cb_append(output_buffer, "Waiting On Player ");
-                        cb_append(output_buffer, &opponentChar);
+                        cb_append(output_buffer, opponentChar);
                     }
                 } else if (strcmp(command, "fire") == 0) {
 
@@ -115,7 +120,7 @@ int handle_client_connect(int player) {
                         cb_append(output_buffer, "Game Has Not Begun!");
                     } else if (player != playerTurn ) {
                         cb_append(output_buffer, "\nPlayer ");
-                        cb_append(output_buffer, &opponentChar);
+                        cb_append(output_buffer, opponentChar);
                         cb_append(output_buffer, " Turn - Not Your Turn Dumbass");
                     } else {
                         unsigned long long hits = gameon->players[player].hits;
@@ -124,8 +129,8 @@ int handle_client_connect(int player) {
                         pthread_mutex_unlock(LOCK);
 
                         if (gameon->players[player].hits != hits ) {
-                            cb_append(output_buffer, "Player ");
-                            cb_append(output_buffer, &playerChar);
+                            cb_append(output_buffer, "\nPlayer ");
+                            cb_append(output_buffer, playerChar);
                             cb_append(output_buffer, " fires at ");
                             cb_append(output_buffer, arg1);
                             cb_append(output_buffer, " ");
@@ -133,12 +138,14 @@ int handle_client_connect(int player) {
                             cb_append(output_buffer, " - HIT");
                             cb_write(SERVER->player_sockets[0], output_buffer);
                             cb_write(SERVER->player_sockets[1], output_buffer);
-                            cb_write(SERVER->server_thread, output_buffer);
+                            //printf("\nPlayer %d fires at %s %s - HIT", player, arg1, arg2);
+                            printf("%s", output_buffer);
+                            //cb_write(SERVER->server_thread, output_buffer);
                             cb_reset(output_buffer);
 
                         } else {
-                            cb_append(output_buffer, "Player ");
-                            cb_append(output_buffer, &playerChar);
+                            cb_append(output_buffer, "\nPlayer ");
+                            cb_append(output_buffer, playerChar);
                             cb_append(output_buffer, " fires at ");
                             cb_append(output_buffer, arg1);
                             cb_append(output_buffer, " ");
@@ -146,26 +153,32 @@ int handle_client_connect(int player) {
                             cb_append(output_buffer, " - MISS");
                             cb_write(SERVER->player_sockets[0], output_buffer);
                             cb_write(SERVER->player_sockets[1], output_buffer);
-                            cb_write(SERVER->server_thread, output_buffer);
+                            //printf("\nPlayer %d fires at %s %s - MISS", player, arg1, arg2);
+                            printf("%s", output_buffer);
+                            //cb_write(SERVER->server_thread, output_buffer);
                             cb_reset(output_buffer);
                         }
                         if (gameon->status == PLAYER_0_WINS) {
-                            cb_append(output_buffer, " - Player 0 WINS!");
+                            cb_append(output_buffer, " - Player 0 WINS!\n");
                             cb_write(SERVER->player_sockets[0], output_buffer);
                             cb_write(SERVER->player_sockets[1], output_buffer);
-                            cb_write(SERVER->server_thread, output_buffer);
+                            //printf(" - Player 0 WINS!\n");
+                            printf("%s", output_buffer);
+                            //cb_write(SERVER->server_thread, output_buffer);
                             cb_reset(output_buffer);
                             game_init();
                         } else if (gameon->status == PLAYER_1_WINS) {
                             cb_append(output_buffer, " - Player 1 WINS!\n");
                             cb_write(SERVER->player_sockets[0], output_buffer);
                             cb_write(SERVER->player_sockets[1], output_buffer);
+                            //printf(" - Player 1 WINS!\n");
+                            printf("%s", output_buffer);
                             //cb_write(SERVER->server_thread, output_buffer);
                             cb_reset(output_buffer);
                             game_init();
                         } else {
                             cb_append(output_buffer, "\nPlayer ");
-                            cb_append(output_buffer, &opponentChar);
+                            cb_append(output_buffer, opponentChar);
                             cb_append(output_buffer, " Turn");
                         }
                     }
@@ -194,7 +207,7 @@ int handle_client_connect(int player) {
 
                 cb_append(output_buffer, "\nbattleBut (? for help) > ");
                 cb_write(fd, output_buffer);
-                printf("%s", output_buffer);
+                printf("\n%s", output_buffer);
                 //cb_write(SERVER->server_thread, output_buffer);
             }
         }
