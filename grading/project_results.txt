@@ -80,10 +80,10 @@ string: Foo
 [ RUN      ] game_load_board.empty_spec
 [       OK ] game_load_board.empty_spec (0 ms)
 [ RUN      ] game_load_board.incomplete_spec
-C00b02D23S47C-1-1b02D23S47p71[       OK ] game_load_board.incomplete_spec (1 ms)
+C00b02D23S47C-1-1b02D23S47p71[       OK ] game_load_board.incomplete_spec (0 ms)
 [ RUN      ] game_load_board.valid_spec
 [       OK ] game_load_board.valid_spec (0 ms)
-[----------] 3 tests from game_load_board (1 ms total)
+[----------] 3 tests from game_load_board (0 ms total)
 
 [----------] 1 test from game_status
 [ RUN      ] game_status.is_correct
@@ -167,5 +167,5 @@ string:   0 1 2 3 4 5 6 7
 [----------] 2 tests from repl_print_hits (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 23 tests from 9 test suites ran. (1 ms total)
+[==========] 23 tests from 9 test suites ran. (0 ms total)
 [  PASSED  ] 23 tests.
