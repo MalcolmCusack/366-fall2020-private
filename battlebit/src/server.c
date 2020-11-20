@@ -15,10 +15,13 @@
 #include<unistd.h>    //write
 
 static game_server *SERVER;
+static pthread_mutex_t *LOCK;
 
 void init_server() {
     if (SERVER == NULL) {
         SERVER = calloc(1, sizeof(struct game_server));
+        LOCK = malloc(sizeof(pthread_mutex_t));
+        pthread_mutex_init(LOCK, NULL);
     } else {
         printf("Server already started");
     }
@@ -116,8 +119,10 @@ int handle_client_connect(int player) {
                         cb_append(output_buffer, " Turn - Not Your Turn Dumbass");
                     } else {
                         unsigned long long hits = gameon->players[player].hits;
-
+                        pthread_mutex_lock(LOCK);
                         game_fire(gameon, player, atoi(arg1), atoi(arg2));
+                        pthread_mutex_unlock(LOCK);
+
                         if (gameon->players[player].hits != hits ) {
                             cb_append(output_buffer, "Player ");
                             cb_append(output_buffer, &playerChar);
@@ -184,10 +189,12 @@ int handle_client_connect(int player) {
                  */
                 cb_write(fd, output_buffer);
                 //cb_write(SERVER->server_thread, output_buffer);
+                printf("%s", output_buffer);
                 cb_reset(output_buffer);
 
                 cb_append(output_buffer, "\nbattleBut (? for help) > ");
                 cb_write(fd, output_buffer);
+                printf("%s", output_buffer);
                 //cb_write(SERVER->server_thread, output_buffer);
             }
         }
@@ -199,20 +206,22 @@ void server_broadcast(char_buff *msg, int player) {
     // send message to all players
     if (player == 0) {
         char_buff *output_buffer = cb_create(2000);
-        cb_append(output_buffer, "\nPlayer 0 says: ");
+        cb_append(output_buffer, "\nPlayer 1 says: ");
         cb_append(output_buffer, msg);
         cb_append(output_buffer, "\nbattleBut (? for help) > ");
         //cb_write(SERVER->player_sockets[0], output_buffer);
         cb_write(SERVER->player_sockets[1], output_buffer);
-        cb_write(SERVER->server_thread, output_buffer);
+        printf("Player 1 says: %s\nbattlebit (? for helo) > ",msg );
+        //cb_write(SERVER->server_thread, output_buffer);
         cb_reset(output_buffer);
     } else {
         char_buff *output_buffer = cb_create(2000);
-        cb_append(output_buffer, "\nPlayer 1 says: ");
+        cb_append(output_buffer, "\nPlayer 0 says: ");
         cb_append(output_buffer, msg);
         cb_append(output_buffer, "\nbattleBut (? for help) > ");
         cb_write(SERVER->player_sockets[0], output_buffer);
-        cb_write(SERVER->server_thread, output_buffer);
+        //cb_write(SERVER->server_thread, output_buffer);
+        printf("Player 0 says: %s\nbattlebit (? for help) > ",msg );
         //cb_write(SERVER->player_sockets[1], output_buffer);
         cb_reset(output_buffer);
     }

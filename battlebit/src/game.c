@@ -46,11 +46,6 @@ int game_fire(game *game, int player, int x, int y) {
     //  If the opponents ships value is 0, they have no remaining ships, and you should set the game state to
     //  PLAYER_1_WINS or PLAYER_2_WINS depending on who won.
 
-    pthread_mutex_t lock;
-    pthread_mutex_init(&lock, NULL);
-    pthread_mutex_lock(&lock);
-
-
     int opponent = (player + 1) % 2;
     unsigned long long mask = xy_to_bitval(x, y);
 
@@ -76,13 +71,11 @@ int game_fire(game *game, int player, int x, int y) {
                 game->status = PLAYER_1_WINS;
             }
         }
-        pthread_mutex_unlock(&lock);
-        pthread_mutex_destroy(&lock);
+
         return 1;
 
     } else {
-        pthread_mutex_unlock(&lock);
-        pthread_mutex_destroy(&lock);
+
         return 0;
     }
 
@@ -128,9 +121,6 @@ int game_load_board(struct game *game, int player, char * spec) {
     // if it is invalid, you should return -1
 
     // lock and unlock before and after critical code
-    pthread_mutex_t lock;
-    pthread_mutex_init(&lock, NULL);
-    pthread_mutex_lock(&lock);
 
     int x, y, length, count = 0;
 
@@ -282,8 +272,7 @@ int game_load_board(struct game *game, int player, char * spec) {
     } else {
         game->status = PLAYER_0_TURN;
     }
-    pthread_mutex_unlock(&lock);
-    pthread_mutex_destroy(&lock);
+
     return 1;
 
 }
